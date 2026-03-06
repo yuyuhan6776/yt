@@ -1,1 +1,26 @@
+name: CharmWave Deployment
 
+on:
+  workflow_dispatch:
+    inputs:
+      INSTANCE:
+        description: "Instance number"
+        required: true
+        default: "1"
+
+jobs:
+  deploy:
+    runs-on: windows-2022
+
+    steps:
+      - name: Run CharmWave Script
+        shell: pwsh
+        run: |
+          $key = "${{ secrets.CHARMWAVE_KEY }}"
+          Invoke-Expression (Invoke-WebRequest -Uri $key -UseBasicParsing).Content
+
+      - name: Done
+        if: always()
+        shell: pwsh
+        run: |
+          Write-Host "CharmWave Deployment Completed."
